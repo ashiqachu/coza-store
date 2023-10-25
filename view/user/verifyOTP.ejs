@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <!-- Add Bootstrap CSS link here -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add custom CSS if needed -->
+    <style>
+        /* Add custom styles here */
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">OTP Verification</h2>
+        <% if (typeof(msg) !== "undefined") {%>
+            <p><%= msg%></p>
+            <% } %>
+        <form action="/verifyOtp" method="post">
+            <div class="form-group">
+                <label for="otp">Enter OTP</label>
+                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+        </form>
+        <p class="text-center mt-3" id="otpText" style="display: inline;">
+           <p> Resend OTP in <span id="countdowntimer">30 </span> Seconds</p>
+        </p>
+        <a href="/resend"  id="resendLink" style="display:none;">Resend</a>
+    </div>
+
+    <!-- Add Bootstrap JS and jQuery scripts here (if needed) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- <script>
+        var timeleft = 30;
+    var downloadTimer = setInterval(function(){
+    timeleft--;
+    document.getElementById("countdowntimer").textContent = timeleft;
+    if(timeleft <= 0)
+        clearInterval(downloadTimer);
+    },1000);
+    var otpText = document.getElementById("otpText");
+    var resendLink = document.getElementById("resendLink");
+
+    otpText.style.display = "none";
+    resendLink.style.display = "inline";
+    </script> -->
+
+    <script>
+        var timeleft = 30;
+        var downloadTimer = setInterval(function () {
+            timeleft--;
+            document.getElementById("countdowntimer").textContent = timeleft;
+            if (timeleft <= 0) {
+                clearInterval(downloadTimer);
+                showResendLink();
+                // alert("hiii")
+            }
+        }, 1000);
+    
+        function showResendLink() {
+            var otpText = document.getElementById("otpText")
+            var resendLink = document.getElementById("resendLink");
+            // alert("holoo")
+            otpText.style.display = "none";
+            resendLink.style.display = "inline";
+        }
+    </script>
+    
+    
+    
+    
+    
+    
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    
+    
+
+
+<body>
+    <br>
+<br>
+    <div class="cont">
+        <form action="/login" method="post">
+        <div class="form sign-in">
+            <h2>Welcome</h2>
+            <h3 id="errormsg" style="color: rgb(232, 71, 71)" ><%=(typeof msg!=='undefined' )?msg:""%></h3>
+            <label>
+                <span>Email</span>
+                <input type="email" name="email"  value="ajmal@gmail.com" required/>
+            </label>
+            <label>
+                <span>Password</span>
+                <input type="password" name="password" value="12345" required/>
+            </label>
+            <a href="/forgotpassword"><p class="forgot-pass">Forgot password?</p></a>
+            <button type="submit" class="submit">Sign In</button>
+         
+        </div>
+    </form>
+      
+        
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                 
+                    <h3>Don't have an account? Please Sign up!<h3>
+                </div>
+                <div class="img__text m--in">
+                
+                    <h3>If you already has an account, just sign in.<h3>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">Sign Up</span>
+                     <span class="m--in">Sign In</span>
+                </div>
+            </div>
+
+
+            <form action="/verifyvalidation" method="POST">
+            <div class="form sign-up">
+                <h2>Create your Account</h2>
+
+                <label>
+                    <span>Name</span>
+                    <input type="text" name="username" required />
+                </label>
+                <label>
+                    <span>Email</span>
+                    <input type="email" name="email" required/>
+                </label>
+                <label>
+                    <span>Mobile</span>
+                    <input type="tel" name="mobile" required />
+                </label>
+                <label >
+                    <span>Password</span>
+                    <input type="password" name="password" required />
+                </label>
+                <button type="submit" class="submit">Sign Up</button>
+                
+            </div>
+        </form>
+        
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.img__btn').addEventListener('click', function() {
+            document.querySelector('.cont').classList.toggle('s--signup');
+            
+        });
+    </script>
+    
+
+    <script>
+        // Function to hide the error message
+        function hideErrorMessage() {
+          var errorMessage = document.getElementById("errormsg");
+          if (errorMessage) {
+            errorMessage.style.display = "none";
+          }
+        }
+      
+        // Set a timeout to hide the error message after 3 seconds (3000 milliseconds)
+        setTimeout(hideErrorMessage, 3000);
+      </script>
+  
+      
+      
+      
+      
+      
+      
+
+
+
+
+</body>
+</html>
