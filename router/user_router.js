@@ -47,8 +47,11 @@ user_router.post('/changePassword',userController.changePassword)
 user_router.post('/login',userController.verifyLogin)
 user_router.get('/home',authentication.isLogin,userController.loadHome)
 user_router.post('/search',userController.searchProduct)
+user_router.get('/profile',authentication.isLogin,userController.profile)
+user_router.get('/changeUserPassword',authentication.isLogin,userController.changeUserPassword)
+user_router.post('/changeUser',userController.submittingUserPassword)
 
-
+        
 user_router.get('/orderDetails',userController.loadOrderDetails)
 user_router.get('/orderDetail',authentication.isLogin,userCartController.orderDetails)
 user_router.get('/invoice',authentication.isLogin,userCartController.downloadInvoice)

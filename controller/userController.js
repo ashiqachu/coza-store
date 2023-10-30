@@ -9,10 +9,86 @@ const orderBase = require('../model/orderModel')
 const whishListBase = require('../model/whishListModel')
 
 
-const accountSid = "AC8d842d9aabe884ea6a2c42f7455bc1c7";
-const authToken = 'f866f8f7425cbb267eb3ee9033a924d9';
-const verifySid = "VA46c24306d78b2a1e6e6ec34f3b6ae877";
+const accountSid = "AC878fb142754211e8ca8725e740b14636";
+const authToken = 'b83b7e7b60309e84230a49f8f33590ef';
+const verifySid = "VAe6f1d843c0f443981c86d3811cc2b68f";
 const client = require("twilio")(accountSid, authToken);
+
+
+
+const profile = async ( req , res ) => {
+    try {
+        const id = new mongoose.Types.ObjectId(req.session.userid)
+        const user = await userBase.findById(id)
+        // console.log(user);
+        res.render('profile',{user})
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const changeUserPassword = async ( req , res ) => {
+    try {
+        const id = new mongoose.Types.ObjectId(req.session.userid)
+        const user = await userBase.findById(id)
+        res.render('changeUserPassword',{user})
+    } catch (error) {
+        console.log(error);
+        res.render('error')
+    }
+}
+
+const submittingUserPassword = async ( req , res ) => {
+    try {
+        // console.log(req.body,"+++++++++++++++");
+        // const id = new mongoose.Types.ObjectId(req.session.userid)
+        // const current = req.body.currentpassword    
+        // const password = req.body.password
+        // console.log(current,password,">>>>>>>>>>>>>.");
+        // const user = await userBase.findById(id)
+        // console.log(user.password,"------------");
+        // const passwordMatch = await bcrypt.compare(current,user.password)
+
+
+        // if (passwordMatch) {
+        //     console.log("if");
+        //     console.log(password,"??????????????");
+        //     const spassword = await securePassword(password)
+        //     await userBase.findByIdAndUpdate({_id:id},{$set:{password:spassword}})
+        //     res.json({status:true})
+        // }
+        // else {
+        //     res.json({status:false})
+        // }
+        const id = req.session.userid
+        const oldpassword = req.body.oldpassword
+        console.log(oldpassword,"1111111111111");
+        const password = req.body.newpassword
+        console.log(password,"22222222221");
+
+        const repassword = req.body.repassword
+        const spassword = await securePassword(password)
+
+
+        const user = await userBase.findById(id)
+        const passwordMatch = await bcrypt.compare(oldpassword,user.password)
+
+        if(passwordMatch){
+            if(password === repassword){
+                await userBase.findByIdAndUpdate({_id:id},{$set:{password:spassword}})
+                res.render('changeUserPassword',{message : "Password changed Successfully....",user})
+            }else{
+                res.render('changeUserPassword',{message : "Re-enter valid password",user})
+            }
+        }else{
+            res.render('changeUserPassword',{message : "Current  password is Incorrect",user})
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.render('error')
+    }
+}
 
 
 const logout = async (req,res) => {
@@ -355,14 +431,16 @@ const loadHome = async (req,res) => {
         const category = await categoryBase.find()
        const product = await productBase.find({is_Listed:true}).limit(4)
        const banner = await bannerBase.find()
-       const whishlists = await whishListBase.find()
        const user = await userBase.findById(req.session.userid)
-       
-        const whishlist = []
-        for (let i = 0; i < whishlists.length; i++) {
-            whishlist.push(await productBase.findById(whishlists[i].product))
+       //    console.log(whishlists.product[0]);
+    const whishlists = await whishListBase.findOne({user:req.session.userid})
+    const whishlist = []
+       if (whishlists) {
+        for (let i = 0; i < whishlists.product.length; i++) {
+            whishlist.push(await productBase.findById(whishlists.product[i]))
         } 
-        console.log(whishlist);
+    }
+        // console.log(whishlist);
 
 
     //    console.log(category)
@@ -419,12 +497,13 @@ const searchProduct = async (req, res) => {
         products.push(await productBase.findById(cart.cart[i].product))  
         }
        const banner = await bannerBase.find()
-       const whishlists = await whishListBase.find()
-       
+       const whishlists = await whishListBase.findOne({user:req.session.userid})
        const whishlist = []
-       for (let i = 0; i < whishlists.length; i++) {
-           whishlist.push(await productBase.findById(whishlists[i].product))
-       } 
+       if (whishlists) {
+        for (let i = 0; i < whishlists.product.length; i++) {
+            whishlist.push(await productBase.findById(whishlists.product[i]))
+        } 
+    } 
 
 
         res.render('index', { product,category,products,banner,whishlist,user});
@@ -445,12 +524,13 @@ const loadOrderDetails = async (req , res) => {
         let productDetailss = []
         let orderarr = []
         const fullorders = []
-        const whishlists = await whishListBase.find()
-       
+        const whishlists = await whishListBase.findOne({user:req.session.userid})
         const whishlist = []
-        for (let i = 0; i < whishlists.length; i++) {
-            whishlist.push(await productBase.findById(whishlists[i].product))
-        } 
+           if (whishlists) {
+            for (let i = 0; i < whishlists.product.length; i++) {
+                whishlist.push(await productBase.findById(whishlists.product[i]))
+            } 
+        }
 
         for (let i = 0; i < order.length; i++) {
             for(let j = 0; j < order[i].productDetails.length; j++) {
@@ -522,7 +602,10 @@ module.exports = {
     verifyOtpForgot,
     changePassword,
     loadOrderDetails,
-    resendOTP
+    resendOTP,
+    profile,
+    changeUserPassword,
+    submittingUserPassword
     
 
 

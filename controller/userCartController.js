@@ -4,6 +4,7 @@ const userBase = require('../model/userModel')
 const adrressBase = require('../model/adrressModel')
 const coupunBase = require('../model/coupunModel')
 const orderBase = require('../model/orderModel')
+const whishListBase = require('../model/whishListModel')
 const Razorpay = require('razorpay')
 const easyinvoice = require('easyinvoice')
 const {Readable} = require('stream')
@@ -34,7 +35,14 @@ const loadCart = async ( req, res ) => {
             total = cart[i].total + total
         }
         const user = await userBase.findById(req.session.userid)
-        res.render('shoping-cart',{product,cart,total,user})
+        const whishlists = await whishListBase.findOne({user:req.session.userid})
+        const whishlist = []
+           if (whishlists) {
+            for (let i = 0; i < whishlists.product.length; i++) {
+                whishlist.push(await productBase.findById(whishlists.product[i]))
+            } 
+        }
+        res.render('shoping-cart',{product,cart,total,user,whishlist})
         
     } catch (error) {
         console.log(error);
@@ -181,7 +189,14 @@ const loadCheckout = async (req,res) => {
       req.session.checkOut = true
         cart = cart.cart
         const user = await userBase.findById(userId)
-        res.render('checkout',{product,cart,total,checkOut,finalPrice,products,user})
+        const whishlists = await whishListBase.findOne({user:req.session.userid})
+        const whishlist = []
+           if (whishlists) {
+            for (let i = 0; i < whishlists.product.length; i++) {
+                whishlist.push(await productBase.findById(whishlists.product[i]))
+            } 
+        } 
+        res.render('checkout',{product,cart,total,checkOut,finalPrice,products,user,whishlist})
     } catch (error) {
         res.render('error')
         

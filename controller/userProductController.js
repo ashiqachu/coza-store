@@ -20,11 +20,12 @@ const loadShop = async (req,res) => {
     for ( let i = 0; i < cart.cart.length; i++) {
     products.push(await productBase.findById(cart.cart[i].product))  
     }
-    const whishlists = await whishListBase.find()
-       
+    const whishlists = await whishListBase.findOne({user:req.session.userid})
     const whishlist = []
-    for (let i = 0; i < whishlists.length; i++) {
-        whishlist.push(await productBase.findById(whishlists[i].product))
+       if (whishlists) {
+        for (let i = 0; i < whishlists.product.length; i++) {
+            whishlist.push(await productBase.findById(whishlists.product[i]))
+        } 
     } 
     const user = await userBase.findById(req.session.userid)
     res.render('product',{product,category,page,products,whishlist,user})
@@ -48,11 +49,12 @@ const lowTOHigh = async ( req, res ) => {
         for ( let i = 0; i < cart.cart.length; i++) {
         products.push(await productBase.findById(cart.cart[i].product))  
         }
-        const whishlists = await whishListBase.find()
-       
+        const whishlists = await whishListBase.findOne({user:req.session.userid})
         const whishlist = []
-        for (let i = 0; i < whishlists.length; i++) {
-            whishlist.push(await productBase.findById(whishlists[i].product))
+           if (whishlists) {
+            for (let i = 0; i < whishlists.product.length; i++) {
+                whishlist.push(await productBase.findById(whishlists.product[i]))
+            } 
         } 
         res.render('product',{product,page,products,whishlist,user})
     } catch (error) {
@@ -75,11 +77,12 @@ const highTOLow = async ( req, res ) => {
         for ( let i = 0; i < cart.cart.length; i++) {
         products.push(await productBase.findById(cart.cart[i].product))  
         }
-        const whishlists = await whishListBase.find()
-       
+        const whishlists = await whishListBase.findOne({user:req.session.userid})
         const whishlist = []
-        for (let i = 0; i < whishlists.length; i++) {
-            whishlist.push(await productBase.findById(whishlists[i].product))
+           if (whishlists) {
+            for (let i = 0; i < whishlists.product.length; i++) {
+                whishlist.push(await productBase.findById(whishlists.product[i]))
+            } 
         } 
         // console.log(product);
         res.render('product',{product,page,products,whishlist,user})
@@ -108,12 +111,13 @@ const searchProduct = async (req, res) => {
         for ( let i = 0; i < cart.cart.length; i++) {
         products.push(await productBase.findById(cart.cart[i].product))  
         }
-        const whishlists = await whishListBase.find()
-       
-        const whishlist = []
-        for (let i = 0; i < whishlists.length; i++) {
-            whishlist.push(await productBase.findById(whishlists[i].product))
+        const whishlists = await whishListBase.findOne({user:req.session.userid})
+    const whishlist = []
+       if (whishlists) {
+        for (let i = 0; i < whishlists.product.length; i++) {
+            whishlist.push(await productBase.findById(whishlists.product[i]))
         } 
+    }
         const user = await userBase.findById(req.session.userid)
 
 
@@ -135,9 +139,15 @@ const product_Details = async ( req,res ) => {
     const user = await userBase.findById(userid)
     const categoryId = product.category
     // console.log(categoryId,"aaaaaa");
-    const products = await productBase.find({category:categoryId})
-    const whishlists = await whishListBase.find()
 
+    const products = await productBase.find({category:categoryId})
+  const whishlists = await whishListBase.findOne({user:req.session.userid})
+    const whishlist = []
+       if (whishlists) {
+        for (let i = 0; i < whishlists.product.length; i++) {
+            whishlist.push(await productBase.findById(whishlists.product[i]))
+        } 
+    } 
 
 
     let productss = []
@@ -151,7 +161,7 @@ const product_Details = async ( req,res ) => {
     
     // console.log(products);
     const category = await categoryBase.findById(product.category)
-    res.render('product-detail', { product,category,products,user,productss,whishlists})
+    res.render('product-detail', { product,category,products,user,productss,whishlist})
     }
     catch (error) {
         console.log(error);

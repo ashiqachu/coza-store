@@ -6,15 +6,48 @@ const mongoose = require ('mongoose')
 
 const addWhishlist = async ( req , res ) => {
     try {
+        // console.log("Hiiiiiiiii");
         const id = new mongoose.Types.ObjectId(req.body.id)
-        const exist = await whishListBase.findOne( {product : id} )
-        if (exist) {
-
+        const user = new mongoose.Types.ObjectId(req.session.userid)
+        const exist = await whishListBase.aggregate([
+            {
+                $match: {
+                    user: user
+                }
+            },
+            {
+                $unwind: "$product"
+            },
+            {
+                $match: {
+                    "product": id
+                }
+            }
+        ]);
+        console.log(exist);
+        const hello = await whishListBase.findOne({user : user})
+        if (exist.length != 0) {
+            res.json({status : true})
+        }
+        
+        else if(hello) {
+           await whishListBase.updateOne(
+                {
+                    user: user, // Match the user
+                    
+                },
+                {
+                    $push: { "product": id } // Push the new ID to the "product" array
+                }
+            );
+            res.json({status : true})
         }
         else {
         const data = new whishListBase ({
+            user : user,
             product : id
         })
+        console.log(data);
         await data.save()
         res.json({status : true})
     }
@@ -25,8 +58,17 @@ const addWhishlist = async ( req , res ) => {
 
 const deleteWhishlist = async ( req , res ) => {
     try {
+        const user = new mongoose.Types.ObjectId(req.session.userid)
         const id = new mongoose.Types.ObjectId(req.body.id)
-        await whishListBase.findOneAndRemove({ product: id })
+        await whishListBase.updateOne(
+            {
+                user: user, // Match the user
+                
+            },
+            {
+                $pull: { "product": id } // Push the new ID to the "product" array
+            }
+        );
         res.json({status : true})
 
     } catch (error) {

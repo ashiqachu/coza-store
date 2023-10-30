@@ -199,7 +199,6 @@
             <div class="content-header ">
                 <div>
                     <h2 class="content-title card-title ">Categories </h2>
-                    <p >Add, edit or delete a category</p>
                 </div>
                 <div>
                     <input type="text" placeholder="Search Categories" class="form-control bg-white">
@@ -214,6 +213,7 @@
 
                                     <label for="product_name"  class="form-label">Name</label>
                                     <input type="text" placeholder="Type here" name="category_name" class="form-control" id="product_name" value="<%= category.category_name %>" required />
+                                    <p id="category_error" style="color: red;"></p>
                                     <input type="text" placeholder="Type here" name="id" class="form-control" id="product_name" value="<%= category._id %>" style="display: none;" />
                                     <div class="card mb-4 mt-10">
                                         <div class="card-header">
@@ -230,7 +230,7 @@
                                 </div>
                              
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary" id="submitButton">
+                                    <button type="submit" class="btn btn-primary" id="submitButton" onclick="validation()">
                                         <% if (typeof(msg) != "undefined") {%>
                                             <%= msg%>
                                         <%} else {%>
@@ -269,6 +269,34 @@
   
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    function validation(){
+
+        //to clear error message
+        document.getElementById('category_error').textContent = '';
+       
+
+        let categoryname = document.getElementById('product_name').value;
+      
+
+        let isValid = true
+
+        if(categoryname.trim() === ''){
+            document.getElementById('category_error').textContent = 'Proper Name is required';
+            isValid = false;
+        }
+       
+
+    
+       
+
+        if(isValid){
+            return true
+        }else{
+            return false
+        }
+    }
+    </script>
     <script>$(document).ready(function() {
      // Check if msg exists and is not undefined
      if (typeof msg == 'undefined') {

@@ -1,8 +1,12 @@
 const mongoose = require('mongoose')
 
 const whishList = mongoose.Schema({
-    product:{
+    user : {
         type : mongoose.Types.ObjectId,
+        require : true
+    },
+    product:{
+        type : Array,
         require : true
     }
   

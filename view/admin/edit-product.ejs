@@ -212,10 +212,10 @@
                         <div class="card-body">
                         <form action="/admin/editproduct?id=<%= product._id%>" method="post" enctype="multipart/form-data">
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Product Name</label>
+                                    <label for="product_name" class="form-label"  >Product Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="product_name" name="product_name" value="<%= product.product_name %>" oninput="validateInput(this)" required>
-
                                     <p id="product_name_error" style="color: red;"></p>
+
 
                                 </div>
                                 <div class="mb-4">
@@ -296,8 +296,7 @@
                                            
 
                             <div>
-                                <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
-                                <button class="btn btn-md rounded font-sm hover-up" type="submit">Update Product</button>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit" onclick=" return validation()">Update Product</button>
                             </div>
 
                                 <!-- <label class="form-check mb-4">
@@ -344,8 +343,9 @@
             </div>
         </footer>
     </main>
+    
 
-    <!-- <script>
+    <script>
         function validateInput(input) {
             if (input.value.trim() === '') {
                 input.setCustomValidity("Please enter a valid value.");
@@ -356,18 +356,21 @@
         function validation() {
             // Clear previous error messages
             document.getElementById('product_name_error').textContent = '';
+            // document.getElementById('description_error').textContent = '';
             document.getElementById('stock_error').textContent = '';
             document.getElementById('og_price_error').textContent = '';
             document.getElementById('offer_price_error').textContent = '';
-            document.getElementById('image1_error').textContent = '';
+            // document.getElementById('image1_error').textContent = '';
 
             let product_name = document.getElementById('product_name').value;
+            // let description = document.getElementById('description').value;
             let stock = document.getElementById('stock').value;
             let og_price = document.getElementById('og_price').value;
             let offer_price = document.getElementById('offer_price').value;
-            let image1 = document.querySelector('input[name="image1"]').files;
+            // let image1 = document.querySelector('input[name="image1"]').files;
 
             let isValid = true;
+            
 
             if (product_name.trim() === '') {
                 document.getElementById('product_name_error').textContent = 'Product Name is required';
@@ -385,10 +388,14 @@
                 document.getElementById('offer_price_error').textContent = 'Give valid price';
                 isValid = false;
             }
-            if (image1.length === 0) {
-    document.getElementById('image1_error').textContent = 'Please select an image';
-    isValid = false;
-  }
+            // if (description.trim() === '') {
+            //     document.getElementById('description_error').textContent = 'Please enter description';
+            //     isValid = false;
+            // }
+//             if (image1.length === 0) {
+//     document.getElementById('image1_error').textContent = 'Please select an image';
+//     isValid = false;
+//   }
 
             if (isValid) {
                 return true;  // Allow form submission
@@ -396,7 +403,7 @@
             return false;
         }
 
-    </script> -->
+    </script>
 
     <script>
         function validateInput(input) {
