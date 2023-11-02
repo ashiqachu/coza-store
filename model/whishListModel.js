@@ -12,4 +12,4 @@ const whishList = mongoose.Schema({
   
 })
 
-module.exports = mongoose.model('whishList',whishList)
+module.exports = mongoose.model('whishList',whishList) 
