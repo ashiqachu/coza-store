@@ -9,8 +9,9 @@ const orderBase = require('../model/orderModel')
 const whishListBase = require('../model/whishListModel')
 
 
+
 const accountSid = "AC878fb142754211e8ca8725e740b14636";
-const authToken = 'b83b7e7b60309e84230a49f8f33590ef';
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = "VAe6f1d843c0f443981c86d3811cc2b68f";
 const client = require("twilio")(accountSid, authToken);
 
@@ -40,26 +41,7 @@ const changeUserPassword = async ( req , res ) => {
 
 const submittingUserPassword = async ( req , res ) => {
     try {
-        // console.log(req.body,"+++++++++++++++");
-        // const id = new mongoose.Types.ObjectId(req.session.userid)
-        // const current = req.body.currentpassword    
-        // const password = req.body.password
-        // console.log(current,password,">>>>>>>>>>>>>.");
-        // const user = await userBase.findById(id)
-        // console.log(user.password,"------------");
-        // const passwordMatch = await bcrypt.compare(current,user.password)
-
-
-        // if (passwordMatch) {
-        //     console.log("if");
-        //     console.log(password,"??????????????");
-        //     const spassword = await securePassword(password)
-        //     await userBase.findByIdAndUpdate({_id:id},{$set:{password:spassword}})
-        //     res.json({status:true})
-        // }
-        // else {
-        //     res.json({status:false})
-        // }
+       
         const id = req.session.userid
         const oldpassword = req.body.oldpassword
         console.log(oldpassword,"1111111111111");
@@ -243,6 +225,7 @@ const verifyValidation = async(req,res)=>{
     const email =req.body.email
     const mobile = req.body.mobile
     req.session.mobile = mobile
+    console.log(req.session.mobile);
 
     const check = await User.findOne({email:req.body.email})
     if(check){
@@ -255,7 +238,7 @@ const verifyValidation = async(req,res)=>{
     .then((verification) => {
         console.log(verification.status)
         req.session.userData = req.body;
-
+        console.log(req.session.userData);
 
         res.render('verifyOTP')
     })
@@ -268,12 +251,13 @@ const verifyValidation = async(req,res)=>{
 const resendOTP = async ( req , res ) => {
     try {
         const mobile = req.session.mobile
+        console.log(mobile);
         client.verify.v2
         .services(verifySid)
         .verifications.create({ to: `+91${mobile}`, channel: "sms", })
         .then((verification) => {
             console.log(verification.status)
-            req.session.userData = req.body;
+            
     
     
             res.render('verifyOTP')
@@ -287,46 +271,7 @@ const resendOTP = async ( req , res ) => {
 }
 
 
-// const verifyValidation = async (req, res) => {
-//     const email = req.body.email;
-//     const mobile = req.body.mobile;
 
-//     const check = await User.findOne({ email: req.body.email });
-//     if (check) {
-//         return res.render('userLogin', { msg: "User already exists! Please log in." });
-//     }
-
-//     const verificationPromise = client.verify.v2.services(verifySid)
-//         .verifications.create({ to: `+91${mobile}`, channel: "sms" });
-
-//     // Set a timeout for the verification process (e.g., 5 minutes)
-//     const verificationTimeout = 30000; // 5 minutes in milliseconds
-
-//     // Handle the case when verification takes too long
-//     const timeoutId = setTimeout(() => {
-//         // Cancel the verification request (optional, if your provider supports it)
-//         verificationPromise.cancel();
-
-//         // Render an error page or provide a message to the user
-//         // res.render('verificationTimeout', { msg: "Verification timed out. Please try again." });
-//         res.send("verification time out")
-//     }, verificationTimeout);
-
-//     verificationPromise
-//         .then((verification) => {
-//             clearTimeout(timeoutId); // Cancel the timeout since verification succeeded
-//             console.log(verification.status);
-//             req.session.userData = req.body;
-//             res.render('verifyOTP');
-//         })
-//         .catch((error) => {
-//             clearTimeout(timeoutId); // Cancel the timeout since an error occurred
-//             console.log(error.message);
-//             // Handle the error, such as rendering an error page or providing a message to the user
-//             // res.render('verificationError', { msg: "An error occurred during verification. Please try again." });
-//             res.send("An error occurred during verification. Please try again.")
-//         });
-// };
 
 
 
@@ -475,14 +420,7 @@ const loadHome = async (req,res) => {
     }
 }
 
-const productDetailsInIndex = async (req,res) => {
-    try {
-        const product = productBase.find()
-        res.render('index',)
-    } catch (error) {
-        
-    }
-}
+
 
 const searchProduct = async (req, res) => {
     try {

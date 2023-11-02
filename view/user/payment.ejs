@@ -263,9 +263,6 @@
 							View Cart
 						</a>
 
-						<a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-							Check Out
-						</a>
 					</div>
 				</div>
 			</div>
@@ -388,10 +385,24 @@ for (var i = 0; i < radioButtons.length; i++) {
 			method:'get',
 			success : (response) => {
 				if (response.status === true) {
-      // Introduce a 2-second delay before the redirect
-      setTimeout(() => {
-        location.href = '/shop';
-      }, 2000); // 2000 milliseconds = 2 seconds
+					Swal.fire({
+                        title: "Order success",
+                        text: "order placed successfully",
+                        icon: "success",
+                        showCancelButton: true,
+                        confirmButtonText: "view orders",
+                        cancelButtonText: "continue shopping",
+                        reverseButtons: true
+                    }).then(function (result) {
+                        if (result.value) {
+                            
+                            location.href = '/orderDetails'
+                            // result.dismiss can be "cancel", "overlay",
+                            // "close", and "timer"
+                        } else if (result.dismiss === "cancel") {
+                            location.href = '/shop?page=0'
+                        }
+                    });
     }
   
 			}

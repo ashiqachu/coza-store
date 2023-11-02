@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
- 
+const dotenv = require('dotenv');
+dotenv.config();
 const mongodb = require('./config/config')
 
 mongodb.mongodb
@@ -9,7 +10,8 @@ const multer = require('multer');
 const cookie = require('cookie');
 const bodyParser = require('body-parser');
 const path = require('path');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000 ;
+console.log(process.env.PORT,"Lllllllllllll");
 const session = require('express-session')
 
 

@@ -9,6 +9,8 @@ const Razorpay = require('razorpay')
 const easyinvoice = require('easyinvoice')
 const {Readable} = require('stream')
 const { default: mongoose } = require('mongoose')
+const key_secret = process.env.KEY_SECRET
+const key_id = process.env.KEY_ID
 
 
 
@@ -42,7 +44,12 @@ const loadCart = async ( req, res ) => {
                 whishlist.push(await productBase.findById(whishlists.product[i]))
             } 
         }
-        res.render('shoping-cart',{product,cart,total,user,whishlist})
+        const id = new mongoose.Types.ObjectId(req.session.userid)
+        let products = []
+        for ( let i = 0; i < cart.length; i++) {
+        products.push(await productBase.findById(cart[i].product))  
+        }
+        res.render('shoping-cart',{product,cart,total,user,whishlist,products})
         
     } catch (error) {
         console.log(error);
@@ -237,12 +244,21 @@ const coupunApply = async (req,res) => {
       products.push(await productBase.findById(cart.cart[i].product))  
       }
       cart = cart.cart
+       
+
+      const whishlists = await whishListBase.findOne({user:req.session.userid})
+      const whishlist = []
+         if (whishlists) {
+          for (let i = 0; i < whishlists.product.length; i++) {
+              whishlist.push(await productBase.findById(whishlists.product[i]))
+          } 
+        }
       
 
-      res.render('checkout',{product,cart,total,checkOut,finalPrice,products})
+      res.render('checkout',{product,cart,total,checkOut,finalPrice,products,whishlist})
     }
     else {
-        console.log("else");
+        console.log("else");        
     }
 
     } catch (error) {
@@ -405,7 +421,7 @@ const onlinePayment = async (req, res) => {
 
         const order = await orderBase.findOne({ user: id })
 
-        var instance = new Razorpay({ key_id: 'rzp_test_eLOQJttQ4jsy2A', key_secret: 'zGKgcdGkMAYwZJUegszIkHOc' })
+        var instance = new Razorpay({ key_id, key_secret})
 
         // const razorpayOrder = await instance.orders.create({
         //     amount: order.total,
@@ -441,11 +457,12 @@ const cancelOrder = async ( req , res ) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.session.userid)
         const productId = new mongoose.Types.ObjectId(req.query.id)
+        const orderId = new mongoose.Types.ObjectId(req.query.orderid)
         const status = "Cancel"
         const orderDetails = await orderBase.aggregate([
             {
               $match: {
-                user: userId
+                _id : orderId
               }
             },
             {
@@ -467,7 +484,7 @@ const cancelOrder = async ( req , res ) => {
           )          
         await orderBase.updateOne(
             {
-              user: userId, // Match the user ID
+              _id: orderId, // Match the user ID
               'productDetails.product': productId // Match the specific product ID within the array
             },
             {

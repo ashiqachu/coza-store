@@ -75,15 +75,15 @@ const orderDetails = async (req , res) => {
 
 const changingStatus = async ( req , res ) => {
     try {
-        console.log("hello");
-        console.log(req.body);
+       
         const userId = new mongoose.Types.ObjectId(req.body.userId)
         const id = new mongoose.Types.ObjectId(req.body.id)
+        const orderId = new mongoose.Types.ObjectId(req.body.orderId)
         const status = req.body.status
 
         const result = await orderBase.updateOne(
             {
-              user: userId, // Match the user ID
+              _id: orderId, // Match the user ID
               'productDetails.product': id // Match the specific product ID within the array
             },
             {
@@ -92,6 +92,8 @@ const changingStatus = async ( req , res ) => {
               }
             }
           );
+          console.log(result);
+          res.json({status : true})
 
     } catch (error) {
         console.log(error);

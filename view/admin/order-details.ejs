@@ -82,7 +82,7 @@
                             <span>
                                 <i class="material-icons md-calendar_today"></i> <b></b>
                             </span> <br>
-                            <small class="text-muted">Order ID: <%= details[0]._id%></small>
+                            <small data-order-id="<%= details[0]._id%>" class="text-muted">Order ID: <%= details[0]._id%></small>
                         </div>
                        
                     </div>
@@ -100,7 +100,8 @@
                                     <p class="mb-1">
                                     
                                        <p>User:<%= user.username%></p> 
-                                       <p>Mobile: <%= user.mobile%></p> 
+                                       <p>Mobile: <%= user.mobile%></p>
+
                                     </p>
                                     
                                 </div>
@@ -116,8 +117,9 @@
                                     <br>
                                     <p class="mb-1">
                                         <p data-product-id="<%= product._id %>">Product ID: <%= product._id %></p>  
-                                        <p data-user-id="<%= details[0].user%>">user ID:  <%= details[0].user%></p> 
-                                        <p>Method: <%= details[0].productDetails.method%></p>                     
+                                        <p>Method: <%= details[0].productDetails.method%></p> 
+                                        <p data-user-id="<%= details[0].user%>">Status: <%= details[0].productDetails.status %></p> 
+
                                     </p>
                                     
                                 </div>
@@ -132,7 +134,7 @@
                                     <h6 class="mb-1">Deliver to</h6>
                                     <br>
                                     <p class="mb-1">
-                                       <p>Adress:</p>
+                                       <p>Adress: <%= details[0].address[0].country%>,<%= details[0].address[0].adrress%>,<%= details[0].address[0].PinCode%></p>
                                     </p>
                                     
                                 </div>
@@ -188,6 +190,7 @@ const dropdownButton = document.getElementById('statusDropdown');
 const dropdownItems = document.querySelectorAll('.dropdown-item');
 const productInfo = document.querySelector('[data-product-id]');
 const userInfo = document.querySelector('[data-user-id]')
+const orderInfo = document.querySelector('[data-order-id]')
 
 dropdownItems.forEach(function (item) {
 item.addEventListener('click', function (event) {
@@ -198,6 +201,7 @@ dropdownButton.textContent = selectedStatus; // Update the dropdown button text
 console.log('Selected Status:', selectedStatus);
 // alert(selectedStatus)
 
+const orderId = orderInfo.getAttribute('data-order-id')
 const productId = productInfo.getAttribute('data-product-id')
 const userId =  userInfo.getAttribute('data-user-id')
 // alert (userId)
@@ -207,15 +211,13 @@ $.ajax({
           data: {
             status: selectedStatus,
             id: productId ,// Send the product ID as the 'id' parameter
-            userId : userId
+            userId : userId,
+            orderId : orderId
           },
-          success: function (response) {
-            // Handle the AJAX success response here
-            console.log('AJAX Response:', response);
-          },
-          error: function (error) {
-            // Handle the AJAX error here
-            console.error('AJAX Error:', error);
+          success : (response) => {
+            if (response.status == true) {
+              location.reload();
+            }
           }
         });
 });
