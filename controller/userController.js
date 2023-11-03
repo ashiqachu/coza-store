@@ -10,10 +10,9 @@ const whishListBase = require('../model/whishListModel')
 
 
 
-const accountSid = "AC878fb142754211e8ca8725e740b14636";
-const authToken = process.env.TWILIO_AUTH_TOKEN;
+
 const verifySid = "VAe6f1d843c0f443981c86d3811cc2b68f";
-const client = require("twilio")(accountSid, authToken);
+const client = require("twilio")(process.env.ACCOUNTSID,process.env.TWILIO_AUTH_TOKEN);
 
 
 
