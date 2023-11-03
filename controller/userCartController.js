@@ -203,7 +203,7 @@ const loadCheckout = async (req,res) => {
                 whishlist.push(await productBase.findById(whishlists.product[i]))
             } 
         } 
-        res.render('checkout',{product,cart,total,checkOut,finalPrice,products,user,whishlist})
+        res.render('checkout',{product,cart,total,checkOut,finalPrice,products,user,whishlist,msg:"Coupun Code"})
     } catch (error) {
         res.render('error')
         
@@ -255,10 +255,51 @@ const coupunApply = async (req,res) => {
         }
       
 
-      res.render('checkout',{product,cart,total,checkOut,finalPrice,products,whishlist})
+      res.render('checkout',{product,cart,total,checkOut,finalPrice,products,whishlist,coupun})
     }
     else {
-        console.log("else");        
+      let product = []
+      let total = 0
+    
+      const userId = new mongoose.Types.ObjectId(req.session.userid)
+
+      let cart = await userBase.findById(req.session.userid,{cart:1,_id:0})
+
+      let checkOut = await adrressBase.findOne({userId:userId})
+
+  
+
+      for ( let i = 0; i < cart.cart.length; i++) {
+      product.push(await productBase.findById(cart.cart[i].product)) 
+      total = cart.cart[i].total+total 
+      }
+      
+      req.session.total = total
+      let finalPrice = total
+
+
+      
+  for(let i = 0 ; i < cart.cart.length; i++) {
+      let  balance = 0
+        balance = product[i].stock - parseInt(cart.cart[i].count)
+        await productBase.findByIdAndUpdate({_id:cart.cart[i].product},{$set:{stock:balance}})
+    }
+    let products = []
+    for ( let i = 0; i < cart.cart.length; i++) {
+    products.push(await productBase.findById(cart.cart[i].product))  
+    }
+   
+    req.session.checkOut = true
+      cart = cart.cart
+      const user = await userBase.findById(userId)
+      const whishlists = await whishListBase.findOne({user:req.session.userid})
+      const whishlist = []
+         if (whishlists) {
+          for (let i = 0; i < whishlists.product.length; i++) {
+              whishlist.push(await productBase.findById(whishlists.product[i]))
+          } 
+      } 
+      res.render('checkout',{product,cart,total,checkOut,finalPrice,products,user,whishlist,msg:"Invalid Coupun"})      
     }
 
     } catch (error) {
@@ -291,7 +332,7 @@ const confirmCheckout = async (req , res) => {
         PinCode : req.body.postcode
     })
     console.log(data);
-    data.save()
+     await data.save()
 }
 else {
     const data = {

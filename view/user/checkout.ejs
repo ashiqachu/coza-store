@@ -353,9 +353,19 @@
 						<form action="/applyingCoupun" method="post">
 							<div class="flex-w flex-m m-r-20 m-tb-5">
 								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5" type="text" name="coupon" placeholder="Coupon Code">
-									
+								
+								
 								<div class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
 									<button type="submit">Apply coupon</button>
+								</div>
+								<div class="flex-c-m stext-101 cl2 size-118 p-lr-15 pointer m-tb-5">
+									<% if ( typeof (msg) != "undefined") {%>
+								<p  id="errorMessage" style="color: red;">
+									<% if (msg === "Invalid Coupun") { %>
+									  <%= msg %>
+									<% } %>
+								  </p>
+								  <% } %>
 								</div>
 							</div>
 						</form>
@@ -375,6 +385,7 @@
 									Subtotal:
 								</span>
 							</div>
+							
 
 							<div class="size-209">
 								<span class="mtext-110 cl2">
@@ -382,6 +393,21 @@
 								</span>
 							</div>
 						</div>
+
+						<% if (typeof(coupun) != "undefined"){%>
+						<div class="flex-w flex-t bor12 p-b-13">
+						<div class="size-208">
+							<span class="stext-110 cl2">
+								Discount:
+							</span>
+						</div>
+						<div class="size-209">
+							<span class="mtext-110 cl2">
+								<%= coupun.discount%>%
+							</span>
+						</div>
+					</div>
+					<%}%>
 
 		
 
@@ -435,25 +461,34 @@
 								</div>
 
 								<div class="bor8 bg0 m-b-12 ">
-									<input class="stext-111 cl8 plh3 size-111 p-lr-15" style="border-bottom: 1px solid;" type="text" name="firstName" placeholder="First Name" value="<%= checkOut.firstName%>">
-									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="lastName" placeholder="Last Name" value="<%= checkOut.lastName%>">
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" style="border-bottom: 1px solid;" type="text" name="firstName" placeholder="First Name" value="<%= checkOut.firstName%>" required id="firstname">
+									<p style="color: red;" id="firstname_error"></p>
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="lastName" placeholder="Last Name" value="<%= checkOut.lastName%>" required id="lastname">
+										<p style="color: red;" id="lastname_error"></p>
 
 								</div>
 								
 								<div class="bor8 bg0 m-b-22">
-									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="adrress" placeholder="Full Adress" value="<%= checkOut.adrress%>">
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="adrress" placeholder="Full Adress" value="<%= checkOut.adrress%>" required id="address">
+									<p style="color: red;" id="address_error"></p>
+
 								</div>
 								 
 								<div class="bor8 bg0 m-b-22">
-									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="mobile" placeholder="Mobile Number" value="<%= checkOut.mobile%>">
+									
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="mobile" placeholder="Mobile Number" value="<%= checkOut.mobile%>" required id="mobile">
+									<p style="color: red;" id="mobile_error"></p>
+
 								</div>
 
 								<div class="bor8 bg0 m-b-22">
-									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip" value="<%= checkOut.PinCode%>">
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip" value="<%= checkOut.PinCode%>" required id="pincode">
+									<p style="color: red;" id="pincode_error"></p>
+
 								</div>
-								<a href="/proccedToShip"><button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit">
+								<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit" onclick="return validation()">
 									Proceed to Shipping
-								</button></a>
+								</button>
 							</div>
 						</form>
 						<% } else { %>
@@ -474,25 +509,35 @@
 									</div>
 	
 									<div class="bor8 bg0 m-b-12 ">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" style="border-bottom: 1px solid;" type="text" name="firstName" placeholder="First Name">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="lastName" placeholder="Last Name">
+										<input class="stext-111 cl8 plh3 size-111 p-lr-15" style="border-bottom: 1px solid;" type="text" name="firstName" placeholder="First Name" id="firstname" required>
+									    <p style="color: red;" id="firstname_error"></p>
+
+										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="lastName" placeholder="Last Name" id="lastname" required>
+									    <p style="color: red;" id="lastname_error"></p>
+
 	
 									</div>
 									
 									<div class="bor8 bg0 m-b-22">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="adrress" placeholder="Full Adress">
+										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="adrress" placeholder="Full Adress" id="address" required>
+									<p style="color: red;" id="address_error"></p>
+
 									</div>
 									 
 									<div class="bor8 bg0 m-b-22">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="mobile" placeholder="Mobile Number">
+										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="mobile" placeholder="Mobile Number" id="mobie" required>
+									<p style="color: red;" id="mobile_error"></p>
+
 									</div>
 	
 									<div class="bor8 bg0 m-b-22">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip">
+										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip" id="pincode" required>
+									<p style="color: red;" id="pincode"></p>
+
 									</div>
-									<a href="/proccedToShip"><button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit">
+									<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit" onclick=" return validation()">
 										Proceed to Shipping
-									</button></a>
+									</button>
 								</div>
 							</form>
 							<% } %>
@@ -677,6 +722,65 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 <!--===============================================================================================-->
 	<script src="vendor/select2/select2.min.js"></script>
+	<script>
+	function validation(){
+
+		//to clear error message
+		document.getElementById('firstname_error').textContent = '';
+		document.getElementById('lastname_error').textContent ='';
+		document.getElementById('address_error').textContent = '';
+		document.getElementById('mobile_error').textContent ='';
+		document.getElementById('pincode_error').textContent ='';
+
+
+		let firstname = document.getElementById('firstname').value;
+		let lastname = document.getElementById('lastname').value;
+		let address = document.getElementById('address').value;
+		let mobile = document.getElementById('mobile').value;
+		let pincode = document.getElementById('pincode').value;
+
+		let isValid = true
+
+		if(firstname.trim() === ''){
+			document.getElementById('firstname_error').textContent = 'FirstName is required';
+			isValid = false;
+		}
+		if(lastname.trim() === ''){
+			document.getElementById('lastname_error').textContent = 'LastName is required';
+			isValid = false;
+		}
+		if(mobile.length<=9 || mobile.trim() === ''){
+			document.getElementById('mobile_error').textContent = 'Enter valid mobile number';
+			isValid = false;
+		}
+		if(address.trim() === ''){
+			document.getElementById('address_error').textContent = 'Address is required';
+			isValid = false;
+		}
+		if(pincode.trim() === '' || pincode.length < 6){
+			document.getElementById('pincode_error').textContent = 'Please enter valid PinCode';
+			isValid = false;
+		}
+
+	
+		
+		if(isValid){
+			return true
+		}else{
+			return false
+		}
+	}
+
+
+</script>
+
+	<script>
+		// Wait for 3 seconds and then hide the error message
+		setTimeout(function () {
+		  var errorMessage = document.getElementById("errorMessage");
+		  errorMessage.style.display = "none";
+		}, 3000); // 3000 milliseconds (3 seconds)
+	  </script>
 	<script>
 		$(".js-select2").each(function(){
 			$(this).select2({
