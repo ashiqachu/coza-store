@@ -10,7 +10,8 @@ const whishListBase = require('../model/whishListModel')
 
 
 
-
+const accountSid = "AC878fb142754211e8ca8725e740b14636";
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = "VAe6f1d843c0f443981c86d3811cc2b68f";
 const client = require("twilio")(process.env.ACCOUNTSID,process.env.TWILIO_AUTH_TOKEN);
 
@@ -137,7 +138,7 @@ const checkingMobileNo = async (req,res) => {
             console.log(verification.status)
             req.session.userData = req.body;
     
-    
+            console.log("otp ethi");
             res.render('verifyOTP')
         })
         .catch((error) => {
@@ -159,13 +160,17 @@ const checkingMobileNo = async (req,res) => {
 
 const verifyOtpForgot = async (req,res) => {
     try {
+        console.log("hiii");
         let {otp}  = req.body;
         const userData = req.session.userData;
         client.verify.v2
         .services(verifySid)
         .verificationChecks.create({ to: `+91${userData.mobile}`, code: otp })
         .then(async (verification_check) => { // Mark the callback function as async
+            console.log("joooooooooo");
             console.log(verification_check.status);
+            console.log("jooo");
+            console.log(verification_check.status==='approved');
             if(verification_check.status==='approved'){
                 res.render('settingNewPassword')
             }
