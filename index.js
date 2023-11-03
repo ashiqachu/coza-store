@@ -11,7 +11,6 @@ const cookie = require('cookie');
 const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 3000 ;
-console.log(process.env.PORT,"Lllllllllllll");
 const session = require('express-session')
 
 
